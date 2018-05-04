@@ -1,34 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using EntityFramework.BulkInsert.Exceptions;
-#if NET45
 using System.Threading.Tasks;
-#if EF6
 using System.Data.Entity.Spatial;
-#endif
-#if EF5
-using System.Data.Spatial;
-#endif
-#endif
-
-using System.Data.SqlClient;
 using System.Linq;
 using System.Transactions;
-using System.Xml.Serialization;
 using EntityFramework.BulkInsert.Extensions;
 using EntityFramework.BulkInsert.Providers;
 using EntityFramework.BulkInsert.Test.CodeFirst.Domain;
 using EntityFramework.BulkInsert.Test.Domain;
-using EntityFramework.BulkInsert.Test.Domain.ComplexTypes;
-using EntityFramework.MappingAPI.Extensions;
 using NUnit.Framework;
 
-#if EF6
 using Aske.Persistence.Entities;
 using Calculator.Data;
 using Calculator.Entities;
-#endif
 
 namespace EntityFramework.BulkInsert.Test.CodeFirst.BulkInsert
 {
@@ -45,7 +30,6 @@ namespace EntityFramework.BulkInsert.Test.CodeFirst.BulkInsert
 
         protected abstract string ProviderConnectionType { get; }
 
-#if !NET40
         [Test]
         public void BulkInsertWithStreaming()
         {
@@ -64,7 +48,6 @@ namespace EntityFramework.BulkInsert.Test.CodeFirst.BulkInsert
                 ctx.BulkInsert(foos, options);
             }
         }
-#endif
 
         [Test]
         public void BulkInsertCallback()
@@ -189,7 +172,6 @@ namespace EntityFramework.BulkInsert.Test.CodeFirst.BulkInsert
             }
         }
 
-#if EF6
         [Test]
         public virtual void Issue1344Test()
         {
@@ -242,9 +224,6 @@ namespace EntityFramework.BulkInsert.Test.CodeFirst.BulkInsert
                 ctx.BulkInsert(loans, BulkCopyOptions.KeepIdentity);
             }
         }
-#endif
-
-#if EF5 || EF6
 
         [Test]
         public void EnumBulkInsert()
@@ -268,7 +247,6 @@ namespace EntityFramework.BulkInsert.Test.CodeFirst.BulkInsert
                 Assert.IsNotNull(dbCompany);
             }
         }
-#endif
 
         [Test]
         public virtual void MixedTransactionsCommit()
@@ -332,7 +310,6 @@ namespace EntityFramework.BulkInsert.Test.CodeFirst.BulkInsert
             }
         }
 
-#if NET45
         [Test]
         public virtual void DbGeographyObject()
         {
@@ -370,7 +347,6 @@ namespace EntityFramework.BulkInsert.Test.CodeFirst.BulkInsert
                 Assert.AreEqual(50, i);
             }
         }
-#endif
 
         [Test]
         public void TPH_BaseType()
@@ -541,16 +517,4 @@ namespace EntityFramework.BulkInsert.Test.CodeFirst.BulkInsert
         }
     }
 
-#if EF4 || EF5
-    public static class Ef4Compatibiliy
-    {
-        public static void AddRange<T>(this DbSet<T> set, IEnumerable<T> items) where T : class
-        {
-            foreach (var item in items)
-            {
-                set.Add(item);
-            }
-        }
-    }
-#endif
 }

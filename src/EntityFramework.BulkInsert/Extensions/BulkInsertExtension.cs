@@ -9,8 +9,6 @@ namespace EntityFramework.BulkInsert.Extensions
     public static class BulkInsertExtension
     {
 
-#if NET45
-
         /// <summary>
         /// 
         /// </summary>
@@ -79,8 +77,6 @@ namespace EntityFramework.BulkInsert.Extensions
             }
             return context.BulkInsertAsync(entities, options);
         }
-
-#endif
 
         /// <summary>
         /// 

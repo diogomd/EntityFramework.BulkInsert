@@ -3,13 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using EntityFramework.BulkInsert.Exceptions;
-#if NET45
-#if EF6
 using System.Data.Entity.Spatial;
-#else
-using System.Data.Spatial;
-#endif
-#endif
 
 using System.Linq;
 using System.Linq.Expressions;
@@ -189,17 +183,15 @@ namespace EntityFramework.BulkInsert.Helpers
                 try
                 {
                     value = _currentEntityTypeSelectors[i](_enumerator.Current);
-#if NET45
-                    if (value is DbGeography dbgeo)
+                    if (value is DbGeography)
                     {
-                        return Provider.GetSqlGeography(dbgeo.WellKnownValue.WellKnownText, dbgeo.CoordinateSystemId);
+                        return Provider.GetSqlGeography(((DbGeography)value).WellKnownValue.WellKnownText, ((DbGeography)value).CoordinateSystemId);
                     }
-
-                    if (value is DbGeometry dbgeom)
+                                        
+                    if (value is DbGeometry)
                     {
-                        return Provider.GetSqlGeometry(dbgeom.WellKnownValue.WellKnownText, dbgeom.CoordinateSystemId);
+                        return Provider.GetSqlGeometry(((DbGeometry)value).WellKnownValue.WellKnownText, ((DbGeometry)value).CoordinateSystemId);
                     }
-#endif
                 }
                 catch (KeyNotFoundException)
                 {
@@ -214,8 +206,8 @@ namespace EntityFramework.BulkInsert.Helpers
                     var navigationType = col.Type;
                     if (pk == null)
                         return 0;
-
-                    if (!Selectors.TryGetValue(navigationType, out Dictionary<int, Func<T, object>> navSelectors))
+                    Dictionary<int, Func<T, object>> navSelectors;
+                    if (!Selectors.TryGetValue(navigationType, out navSelectors))
                     {
                         if (pk == null)
                             return 0;

@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
-#if NET45
 using System.Threading.Tasks;
-#endif
 
 namespace EntityFramework.BulkInsert.Providers
 {
@@ -39,8 +37,6 @@ namespace EntityFramework.BulkInsert.Providers
         {
             get { return Context.Database.Connection; }
         }
-
-#if NET45
 
         /// <summary>
         /// Get sql grography object from well known text
@@ -113,8 +109,6 @@ namespace EntityFramework.BulkInsert.Providers
                 }
             }
         }
-
-#endif
 
         /// <summary>
         /// Sets DbContext for bulk insert to use
@@ -219,7 +213,6 @@ namespace EntityFramework.BulkInsert.Providers
         /// <param name="transaction"></param>
         public abstract void Run<T>(IEnumerable<T> entities, TTransaction transaction);
 
-#if NET45
         /// <summary>
         /// 
         /// </summary>
@@ -227,7 +220,6 @@ namespace EntityFramework.BulkInsert.Providers
         /// <param name="entities">The entities.</param>
         /// <param name="transaction">The transaction.</param>
         public abstract Task RunAsync<T>(IEnumerable<T> entities, TTransaction transaction);
-#endif
 
     }
 }

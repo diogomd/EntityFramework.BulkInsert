@@ -39,12 +39,10 @@ namespace EntityFramework.BulkInsert
         /// </summary>
         public IDbTransaction Transaction { get; set; }
 
-#if !NET40
         /// <summary>
         /// Enable streaming.
         /// </summary>
         public bool EnableStreaming { get; set; }
-#endif
 
         public BulkInsertOptions()
         {

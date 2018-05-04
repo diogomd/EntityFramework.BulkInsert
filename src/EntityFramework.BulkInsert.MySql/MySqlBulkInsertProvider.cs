@@ -23,7 +23,6 @@ namespace EntityFramework.BulkInsert.MySql
             Run(entities, transaction.Connection, transaction);
         }
 
-#if NET45
         public override Task RunAsync<T>(IEnumerable<T> entities, MySqlTransaction transaction)
         {
             return RunAsync(entities, transaction.Connection, transaction);
@@ -36,11 +35,11 @@ namespace EntityFramework.BulkInsert.MySql
 
         public override object GetSqlGeometry(string wkt, int srid)
         {
-            if (!MySqlGeometry.TryParse(wkt, out MySqlGeometry value))
+            MySqlGeometry value;
+            if (!MySqlGeometry.TryParse(wkt, out value))
                 return null;
             return value;
         }
-#endif
 
         protected override MySqlConnection CreateConnection()
         {
@@ -133,7 +132,6 @@ namespace EntityFramework.BulkInsert.MySql
             }
         }
 
-#if NET45
         private async Task RunAsync<T>(IEnumerable<T> entities, MySqlConnection connection, MySqlTransaction transaction)
         {
             bool keepIdentity = (BulkCopyOptions.KeepIdentity & Options.BulkCopyOptions) > 0;
@@ -199,7 +197,6 @@ namespace EntityFramework.BulkInsert.MySql
                 }
             }
         }
-#endif
 
         private void AddParameter(Type type, object value, List<string> values)
         {
@@ -226,13 +223,13 @@ namespace EntityFramework.BulkInsert.MySql
                 else
                 {
                     const string dateTimePattern = "yyyy-MM-dd HH:mm:ss.ffffff";
-                    if (value is DateTime dt)
+                    if (value is DateTime)
                     {
-                        values.Add($"'{MySqlHelper.EscapeString(dt.ToString(dateTimePattern))}'");
+                        values.Add($"'{MySqlHelper.EscapeString(((DateTime)value).ToString(dateTimePattern))}'");
                     }
-                    else if (value is DateTimeOffset dt2)
+                    else if (value is DateTimeOffset)
                     {
-                        values.Add($"'{MySqlHelper.EscapeString(dt2.ToString(dateTimePattern))}'");
+                        values.Add($"'{MySqlHelper.EscapeString(((DateTimeOffset)value).ToString(dateTimePattern))}'");
                     }
                 }
             }
@@ -291,7 +288,8 @@ namespace EntityFramework.BulkInsert.MySql
             {
                 var engine = cmd.ExecuteScalar();
 
-                Enum.TryParse(engine.ToString(), true, out MySqlEngine tableEngine);
+                MySqlEngine tableEngine;
+                Enum.TryParse(engine.ToString(), true, out tableEngine);
 
                 return tableEngine;
             }
@@ -303,7 +301,8 @@ namespace EntityFramework.BulkInsert.MySql
             {
                 var engine = await cmd.ExecuteScalarAsync().ConfigureAwait(false);
 
-                Enum.TryParse(engine.ToString(), true, out MySqlEngine tableEngine);
+                MySqlEngine tableEngine;
+                Enum.TryParse(engine.ToString(), true, out tableEngine);
 
                 return tableEngine;
             }

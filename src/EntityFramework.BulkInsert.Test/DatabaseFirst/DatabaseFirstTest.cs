@@ -7,9 +7,7 @@ using NUnit.Framework;
 
 namespace EntityFramework.BulkInsert.Test.DatabaseFirst
 {
-#if EF6
     [DbConfigurationType(typeof(SqlContextConfig))]
-#endif
     public partial class DbFirstTestEntities
     {
         

@@ -1,6 +1,4 @@
-﻿#if EF6
-
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using Calculator.Data.Configurations;
 using Calculator.Entities;
 using DataAccess.EF.Conventions;
@@ -26,4 +24,3 @@ namespace Calculator.Data
         } 
     }
 }
-#endif

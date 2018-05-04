@@ -1,15 +1,5 @@
 ﻿using EntityFramework.BulkInsert.Test.CodeFirst.Domain;
-#if EF6
 using System.ComponentModel.DataAnnotations.Schema;
-#endif
-
-#if EF4
-using System.ComponentModel.DataAnnotations;
-#endif
-
-#if EF5
-using System.ComponentModel.DataAnnotations.Schema;
-#endif
 
 using System.Data.Entity;
 using EntityFramework.BulkInsert.Test.Domain;
@@ -17,9 +7,7 @@ using EntityFramework.BulkInsert.Test.Domain.ComplexTypes;
 
 namespace EntityFramework.BulkInsert.Test.CodeFirst
 {
-#if EF6
     [DbConfigurationType(typeof(SqlContextConfig))]
-#endif
     public class TestBaseContext : DbContext
     {
         public TestBaseContext() : base("TestContext")

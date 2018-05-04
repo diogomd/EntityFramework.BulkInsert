@@ -52,11 +52,7 @@ namespace EntityFramework.BulkInsert.Extensions
             for (int i = 0; i < segments.Length; ++i)
             {
                 object tmp = value ?? obj;
-#if NET40
                 value = tmp.GetType().GetProperty(segments[i]).GetValue(tmp, null);
-#else
-                value = tmp.GetType().GetProperty(segments[i]).GetValue(tmp);
-#endif
             }
 
             return value;

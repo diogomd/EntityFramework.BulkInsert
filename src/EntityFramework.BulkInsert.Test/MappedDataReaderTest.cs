@@ -2,15 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
-
-#if NET45
-#if EF6
 using System.Data.Entity.Spatial;
-#endif
-#if EF5
-using System.Data.Spatial;
-#endif
-#endif
 
 using System.Diagnostics;
 using EntityFramework.BulkInsert.Extensions;
@@ -19,8 +11,6 @@ using EntityFramework.BulkInsert.Providers;
 using EntityFramework.BulkInsert.Test.CodeFirst;
 using EntityFramework.BulkInsert.Test.Domain;
 using EntityFramework.BulkInsert.Test.Domain.ComplexTypes;
-using EntityFramework.MappingAPI;
-using EntityFramework.MappingAPI.Extensions;
 using NUnit.Framework;
 using System.Threading.Tasks;
 

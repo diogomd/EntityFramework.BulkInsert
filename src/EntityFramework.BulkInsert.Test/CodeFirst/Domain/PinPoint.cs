@@ -1,11 +1,4 @@
-﻿#if NET45
-#if EF6
-using System.Data.Entity.Spatial;
-#endif
-#if EF5
-using System.Data.Spatial;
-#endif
-#endif
+﻿using System.Data.Entity.Spatial;
 
 namespace EntityFramework.BulkInsert.Test.Domain
 {
@@ -13,8 +6,6 @@ namespace EntityFramework.BulkInsert.Test.Domain
     {
         public string Name { get; set; }
 
-#if NET45
         public DbGeography Coordinates { get; set; }
-#endif
     }
 }
