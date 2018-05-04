@@ -21,36 +21,43 @@ properties {
   if (!$ns) {
 	$builds = @(
 		@{
-			Root = "EntityFramework.BulkInsert\"; 
-			Name = "EntityFramework.BulkInsert.csproj"; 
-			TestsName = "EntityFramework.BulkInsert.Test"; 
-			Constants="NET45;EF6"; 
+			Root = "EF6.BulkInsert\"; 
+			Name = "EF6.BulkInsert.csproj"; 
+			TestsName = "EF6.BulkInsert.Test"; 
 			FinalDir="Net45"; 
 			NuGetDir = "net45"; 
 			Framework="net-4.5"; 
-			NS="EntityFramework.BulkInsert";
+			NS="EF6.BulkInsert";
 			Sign=$true
 		},
 		@{
-			Root = "EntityFramework.BulkInsert.SqlServerCe\"; 
-			Name = "EntityFramework.BulkInsert.SqlServerCe.csproj"; 
-			TestsName = "EntityFramework.BulkInsert.Test"; 
-			Constants="NET45;EF6"; 
+			Root = "EF6.BulkInsert.SqlServer\"; 
+			Name = "EF6.BulkInsert.SqlServer.csproj"; 
+			TestsName = "EF6.BulkInsert.Test"; 
 			FinalDir="Net45"; 
 			NuGetDir = "net45"; 
 			Framework="net-4.5"; 
-			NS="EntityFramework.BulkInsert.SqlServerCe";
+			NS="EF6.BulkInsert.SqlServer";
 			Sign=$true
 		},
 		@{
-			Root = "EntityFramework.BulkInsert.MySql\"; 
-			Name = "EntityFramework.BulkInsert.MySql.csproj"; 
-			TestsName = "EntityFramework.BulkInsert.Test"; 
-			Constants="NET45;EF6"; 
+			Root = "EF6.BulkInsert.MySql\"; 
+			Name = "EF6.BulkInsert.MySql.csproj"; 
+			TestsName = "EF6.BulkInsert.Test"; 
 			FinalDir="Net45"; 
 			NuGetDir = "net45"; 
 			Framework="net-4.5"; 
-			NS="EntityFramework.BulkInsert.MySql";
+			NS="EF6.BulkInsert.MySql";
+			Sign=$true
+		},
+		@{
+			Root = "EF6.BulkInsert.Hana\"; 
+			Name = "EF6.BulkInsert.Hana.csproj"; 
+			TestsName = "EF6.BulkInsert.Test"; 
+			FinalDir="Net45"; 
+			NuGetDir = "net45"; 
+			Framework="net-4.5"; 
+			NS="EF6.BulkInsert.Hana";
 			Sign=$true
 		}
 	)
@@ -60,7 +67,7 @@ properties {
 		@{
 			Root = "$ns\"; 
 			Name = "$ns.csproj"; 
-			TestsName = "EntityFramework.BulkInsert.Test"; 
+			TestsName = "EF6.BulkInsert.Test"; 
 			Constants="NET45;EF6"; 
 			FinalDir="Net45"; 
 			NuGetDir = "net45"; 
@@ -80,7 +87,7 @@ task Validate {
 
 	foreach ($build in $builds)
 	{
-		Assert ("EntityFramework.BulkInsert", "EntityFramework.BulkInsert.MySql", "EntityFramework.BulkInsert.SqlServerCe" -contains $build.NS) "Please provide a valid project parameter"
+		Assert ("EF6.BulkInsert", "EF6.BulkInsert.MySql", "EF6.BulkInsert.SqlServer", "EF6.BulkInsert.Hana" -contains $build.NS) "Please provide a valid project parameter"
 	}
 }
 

@@ -1,0 +1,225 @@
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
+using System.Threading.Tasks;
+
+namespace EF6.BulkInsert.Providers
+{
+    public abstract class ProviderBase<TConnection, TTransaction> : IEfBulkInsertProvider
+        where TConnection : IDbConnection
+        where TTransaction : IDbTransaction
+    {
+        /// <summary>
+        /// Current DbContext
+        /// </summary>
+        public DbContext Context { get; private set; }
+
+        /// <summary>
+        /// Bulk insert options.
+        /// </summary>
+        public BulkInsertOptions Options { get; set; }
+
+        public string ProviderIdentifier { get; private set; }
+
+        /// <summary>
+        /// Connection string which current dbcontext is using
+        /// </summary>
+        protected virtual string ConnectionString
+        {
+            get
+            {
+                return DbConnection.ConnectionString;
+            }
+        }
+
+        protected virtual IDbConnection DbConnection
+        {
+            get { return Context.Database.Connection; }
+        }
+
+        /// <summary>
+        /// Get sql grography object from well known text
+        /// </summary>
+        /// <param name="wkt">Well known text representation of the value</param>
+        /// <param name="srid">The identifier associated with the coordinate system.</param>
+        /// <returns></returns>
+        public abstract object GetSqlGeography(string wkt, int srid);
+
+        /// <summary>
+        /// Get sql geometry object from well known text
+        /// </summary>
+        /// <param name="wkt">Well known text representation of the value</param>
+        /// <param name="srid">The identifier associated with the coordinate system.</param>
+        /// <returns></returns>
+        public abstract object GetSqlGeometry(string wkt, int srid);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="entities"></param>
+        /// <param name="transaction"></param>
+        public Task RunAsync<T>(IEnumerable<T> entities, IDbTransaction transaction)
+        {
+            return RunAsync(entities, (TTransaction)transaction);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="entities"></param>
+        public virtual async Task RunAsync<T>(IEnumerable<T> entities)
+        {
+            if (Options.Transaction?.Connection != null)
+            {
+                await RunAsync(entities, Options.Transaction);
+            }
+            else
+            {
+                IDbConnection dbConnection = GetConnection();
+                try
+                {
+                    if (dbConnection.State != ConnectionState.Open)
+                        dbConnection.Open();
+
+                    using (var transaction = dbConnection.BeginTransaction())
+                    {
+                        try
+                        {
+                            await RunAsync(entities, transaction);
+                            transaction.Commit();
+                        }
+                        catch (Exception)
+                        {
+                            if (transaction.Connection != null)
+                            {
+                                transaction.Rollback();
+                            }
+                            throw;
+                        }
+                    }
+                }
+                finally
+                {
+                    // See if we made the connection and dispose if so
+                    if (Options.Connection == null)
+                        dbConnection.Dispose();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets DbContext for bulk insert to use
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public IEfBulkInsertProvider SetContext(DbContext context)
+        {
+            Context = context;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the ProviderInvariantName for the underlying provider.
+        /// </summary>
+        /// <param name="providerInvariantName"></param>
+        public void SetProviderIdentifier(string providerInvariantName)
+        {
+            ProviderIdentifier = providerInvariantName;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public IDbConnection GetConnection()
+        {
+            if (Options.Connection != null)
+                return Options.Connection;
+            else
+                return CreateConnection();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        protected abstract TConnection CreateConnection();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="entities"></param>
+        /// <param name="transaction"></param>
+        public void Run<T>(IEnumerable<T> entities, IDbTransaction transaction)
+        {
+            Run(entities, (TTransaction)transaction);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="entities"></param>
+        public virtual void Run<T>(IEnumerable<T> entities)
+        {
+            if (Options.Transaction?.Connection != null)
+            {
+                Run(entities, Options.Transaction);
+            }
+            else
+            {
+                IDbConnection dbConnection = GetConnection();
+                try
+                {
+                    if (dbConnection.State != ConnectionState.Open)
+                        dbConnection.Open();
+
+                    using (var transaction = dbConnection.BeginTransaction())
+                    {
+                        try
+                        {
+                            Run(entities, transaction);
+                            transaction.Commit();
+                        }
+                        catch (Exception)
+                        {
+                            if (transaction.Connection != null)
+                            {
+                                transaction.Rollback();
+                            }
+                            throw;
+                        }
+                    }
+
+                }
+                finally
+                {
+                    // See if we made the connection and dispose if so
+                    if (Options.Connection == null)
+                        dbConnection.Dispose();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="entities"></param>
+        /// <param name="transaction"></param>
+        public abstract void Run<T>(IEnumerable<T> entities, TTransaction transaction);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="entities">The entities.</param>
+        /// <param name="transaction">The transaction.</param>
+        public abstract Task RunAsync<T>(IEnumerable<T> entities, TTransaction transaction);
+
+    }
+}
