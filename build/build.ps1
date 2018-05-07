@@ -59,6 +59,16 @@ properties {
 			Framework="net-4.5"; 
 			NS="EF6.BulkInsert.Hana";
 			Sign=$true
+		},
+		@{
+			Root = "EF6.BulkInsert.Oracle\"; 
+			Name = "EF6.BulkInsert.Oracle.csproj"; 
+			TestsName = "EF6.BulkInsert.Test"; 
+			FinalDir="Net45"; 
+			NuGetDir = "net45"; 
+			Framework="net-4.5"; 
+			NS="EF6.BulkInsert.Oracle";
+			Sign=$true
 		}
 	)
   }
@@ -87,7 +97,7 @@ task Validate {
 
 	foreach ($build in $builds)
 	{
-		Assert ("EF6.BulkInsert", "EF6.BulkInsert.MySql", "EF6.BulkInsert.SqlServer", "EF6.BulkInsert.Hana" -contains $build.NS) "Please provide a valid project parameter"
+		Assert ("EF6.BulkInsert", "EF6.BulkInsert.MySql", "EF6.BulkInsert.SqlServer", "EF6.BulkInsert.Hana", "EF6.BulkInsert.Oracle" -contains $build.NS) "Please provide a valid project parameter"
 	}
 }
 
