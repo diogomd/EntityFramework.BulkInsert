@@ -1,6 +1,11 @@
-set VERSION=6.1.0.1
+set VERSION=6.1.0.2
 
-REM build -f '4.6' -parameters @{ "version" = "%VERSION%" }
+pushd .
+cd build
+
+call build -f '4.6' -parameters @{ 'version' = '%VERSION%' }
+
+popd
 
 .\tools\nuget\nuget push dist\NuGet\EF6.BulkInsert\EF6.BulkInsert.%VERSION%.nupkg -Source https://api.nuget.org/v3/index.json
 .\tools\nuget\nuget push dist\NuGet\EF6.BulkInsert.Hana\EF6.BulkInsert.Hana.%VERSION%.nupkg -Source https://api.nuget.org/v3/index.json
