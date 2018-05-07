@@ -4,6 +4,8 @@ using EF6.BulkInsert.Helpers;
 using System.Threading.Tasks;
 using Sap.Data.Hana;
 using System;
+using System.Data;
+using System.Linq;
 
 namespace EF6.BulkInsert.Providers
 {
@@ -30,7 +32,8 @@ namespace EF6.BulkInsert.Providers
                 {
                     bulkCopy.BulkCopyTimeout = Options.TimeOut;
                     bulkCopy.BatchSize = Options.BatchSize;
-                    bulkCopy.DestinationTableName = string.Format("[{0}].[{1}]", reader.SchemaName, reader.TableName);                    
+                    bulkCopy.DestinationTableName = string.Format("{0}.{1}", reader.SchemaName, reader.TableName);
+
 
                     bulkCopy.NotifyAfter = Options.NotifyAfter;
                     if (Options.Callback != null)
@@ -41,8 +44,14 @@ namespace EF6.BulkInsert.Providers
                         };
                     }
 
+                    var table = new DataTable(bulkCopy.DestinationTableName);
+
                     foreach (var kvp in reader.Cols)
                     {
+                        var dataType = kvp.Value.Type;
+                        if (dataType.IsConstructedGenericType)
+                            dataType = dataType.GenericTypeArguments[0];
+                        table.Columns.Add(kvp.Value.ColumnName, dataType);
                         if (kvp.Value.IsIdentity && !keepIdentity)
                         {
                             continue;
@@ -50,7 +59,16 @@ namespace EF6.BulkInsert.Providers
                         bulkCopy.ColumnMappings.Add(kvp.Value.ColumnName, kvp.Value.ColumnName);
                     }
 
-                    bulkCopy.WriteToServer(reader);
+                    foreach (var x in entities)
+                    {
+                        var row = table.NewRow();
+                        foreach (var p in reader.Cols.Values)
+                        {
+                            row[p.ColumnName] = p.Selector.DynamicInvoke(x) ?? DBNull.Value;
+                        }
+                    };
+
+                    bulkCopy.WriteToServer(table);
                 }
             }
         }
