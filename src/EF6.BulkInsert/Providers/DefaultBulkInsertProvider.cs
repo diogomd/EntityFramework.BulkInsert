@@ -128,7 +128,7 @@ namespace EF6.BulkInsert.Providers
             return Task.Run(() => Run(entities, transaction));
         }
 
-        private void AddParameter(Type type, object value, List<string> values)
+        protected virtual void AddParameter(Type type, object value, List<string> values)
         {
             if (type == null
                 || type == typeof(string)
@@ -200,12 +200,12 @@ namespace EF6.BulkInsert.Providers
             return cmd;
         }
 
-        private string CreateInsertBatchText(string insertHeader, List<string> rows)
+        protected virtual string CreateInsertBatchText(string insertHeader, List<string> rows)
         {
-            return string.Join(";\n", rows.Select(values => $"{insertHeader} {values}"));
+            return string.Join("\n", rows.Select(values => $"{insertHeader} {values};"));
         }
 
-        private bool IsDateType(Type type)
+        protected bool IsDateType(Type type)
         {
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
                 return IsDateType(Nullable.GetUnderlyingType(type));
