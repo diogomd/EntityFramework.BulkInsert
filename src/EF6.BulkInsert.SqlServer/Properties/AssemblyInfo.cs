@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("EntityFramework.BulkInsert.SqlServer")]
+[assembly: AssemblyTitle("EF6.BulkInsert.SqlServer")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("EntityFramework.BulkInsert.SqlServer")]
+[assembly: AssemblyProduct("EF6.BulkInsert.SqlServer")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
