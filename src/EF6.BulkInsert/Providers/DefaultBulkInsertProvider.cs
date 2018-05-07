@@ -6,6 +6,7 @@ using System.Data.Common;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Infrastructure.DependencyResolution;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +16,7 @@ namespace EF6.BulkInsert.Providers
 {
     public class DefaultBulkInsertProvider : ProviderBase<DbConnection, DbTransaction>
     {
+        public static string DateTimePattern = "yyyy-MM-dd HH:mm:ss";
         public DefaultBulkInsertProvider()
         {
             SetProviderIdentifier(string.Empty);
@@ -66,9 +68,11 @@ namespace EF6.BulkInsert.Providers
                     .Where(x => !x.Value.Computed && (!x.Value.IsIdentity || keepIdentity))
                     .ToArray();
 
+                var tableName = string.IsNullOrWhiteSpace(reader.SchemaName) ? reader.TableName : $"{reader.SchemaName}.{reader.TableName}";
+                
                 // INSERT INTO [TableName] (column list)
                 var insert = new StringBuilder()
-                    .Append($" INSERT INTO {reader.TableName} ")
+                    .Append($" INSERT INTO {tableName} ")
                     .Append("(")
                     .Append(string.Join(",", columns.Select(col => col.Value.ColumnName)))
                     .Append(")")
@@ -147,15 +151,14 @@ namespace EF6.BulkInsert.Providers
                     values.Add("NULL");
                 }
                 else
-                {
-                    const string dateTimePattern = "yyyy-MM-dd HH:mm:ss.ffffff";
+                {                    
                     if (value is DateTime)
                     {
-                        values.Add($"'{((DateTime)value).ToString(dateTimePattern)}'");
+                        values.Add($"'{((DateTime)value).ToString(DateTimePattern)}'");
                     }
                     else if (value is DateTimeOffset)
                     {
-                        values.Add($"'{((DateTimeOffset)value).ToString(dateTimePattern)}'");
+                        values.Add($"'{((DateTimeOffset)value).ToString(DateTimePattern)}'");
                     }
                 }
             }
@@ -178,8 +181,8 @@ namespace EF6.BulkInsert.Providers
                     values.Add("NULL");
                 }
                 else
-                {
-                    values.Add(value.ToString());
+                {                    
+                    values.Add(Convert.ToString(value, CultureInfo.InvariantCulture));
                 }
             }
         }
@@ -199,7 +202,7 @@ namespace EF6.BulkInsert.Providers
 
         private string CreateInsertBatchText(string insertHeader, List<string> rows)
         {
-            return insertHeader + " " + string.Join(",", rows) + ";";
+            return string.Join(";\n", rows.Select(values => $"{insertHeader} {values}"));
         }
 
         private bool IsDateType(Type type)
