@@ -17,7 +17,7 @@ namespace EF6.BulkInsert.Providers
     {
         public DefaultBulkInsertProvider()
         {
-            SetProviderIdentifier("*");
+            SetProviderIdentifier(string.Empty);
         }
 
         public override object GetSqlGeography(string wkt, int srid)

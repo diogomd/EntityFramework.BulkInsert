@@ -26,8 +26,7 @@ namespace EF6.BulkInsert
                         _providers = new Dictionary<string, Func<IEfBulkInsertProvider>>();
 
                         // bundled providers
-                        //Register<SqlBulkInsertProvider>();
-                        //Register<EfSqlCeBulkiInsertProvider>("System.Data.SqlServerCe.4.0");
+                        Register<DefaultBulkInsertProvider>();
                     }
                 }
 
@@ -68,7 +67,15 @@ namespace EF6.BulkInsert
             var connectionTypeName = context.Database.Connection.GetType().FullName;
             if (!Providers.ContainsKey(connectionTypeName))
             {
-                throw new BulkInsertProviderNotFoundException(connectionTypeName);
+                // Try the default provider
+                if (Providers.ContainsKey(string.Empty))
+                {
+                    connectionTypeName = string.Empty;
+                }
+                else
+                {
+                    throw new BulkInsertProviderNotFoundException(connectionTypeName);
+                }
             }
 
             return Providers[connectionTypeName]().SetContext(context);
