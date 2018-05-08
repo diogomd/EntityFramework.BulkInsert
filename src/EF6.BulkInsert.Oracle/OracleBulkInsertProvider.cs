@@ -1,11 +1,7 @@
-﻿using EF6.BulkInsert.Providers;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace EF6.BulkInsert.Oracle
+namespace EF6.BulkInsert.Providers
 {
     public class OracleBulkInsertProvider : DefaultBulkInsertProvider
     {

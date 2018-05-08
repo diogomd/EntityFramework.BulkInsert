@@ -1,5 +1,5 @@
 ﻿using EF6.BulkInsert.Helpers;
-using EF6.BulkInsert.Providers;
+using EF6.BulkInsert.MySql;
 using MySql.Data.MySqlClient;
 using MySql.Data.Types;
 using System;
@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace EF6.BulkInsert.MySql
+namespace EF6.BulkInsert.Providers
 {
     public class MySqlBulkInsertProvider : ProviderBase<MySqlConnection, MySqlTransaction>
     {

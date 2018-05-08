@@ -1,4 +1,5 @@
 ﻿using EF6.BulkInsert.MySql;
+using EF6.BulkInsert.Providers;
 
 namespace EF6.BulkInsert.Test.CodeFirst.BulkInsert.MySql
 {

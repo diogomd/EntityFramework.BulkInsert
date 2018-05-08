@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Sap.Data.Hana;
 using System;
 using System.Data;
-using System.Linq;
 
 namespace EF6.BulkInsert.Providers
 {
