@@ -1,4 +1,4 @@
-set VERSION=6.1.0.3
+set VERSION=6.1.0.4
 
 pushd .
 cd build
