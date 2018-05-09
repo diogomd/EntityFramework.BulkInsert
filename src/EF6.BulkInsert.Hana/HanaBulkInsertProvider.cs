@@ -65,6 +65,7 @@ namespace EF6.BulkInsert.Providers
                         {
                             row[p.ColumnName] = p.Selector.DynamicInvoke(x) ?? DBNull.Value;
                         }
+                        table.Rows.Add(row);
                     };
 
                     bulkCopy.WriteToServer(table);
