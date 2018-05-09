@@ -31,8 +31,7 @@ namespace EF6.BulkInsert.Providers
                 {
                     bulkCopy.BulkCopyTimeout = Options.TimeOut;
                     bulkCopy.BatchSize = Options.BatchSize;
-                    bulkCopy.DestinationTableName = string.Format("{0}.{1}", reader.SchemaName, reader.TableName);
-
+                    bulkCopy.DestinationTableName = string.Format("\"{0}\".\"{1}\"", reader.SchemaName, reader.TableName);
 
                     bulkCopy.NotifyAfter = Options.NotifyAfter;
                     if (Options.Callback != null)
@@ -43,7 +42,7 @@ namespace EF6.BulkInsert.Providers
                         };
                     }
 
-                    var table = new DataTable(bulkCopy.DestinationTableName);
+                    var table = new DataTable(reader.TableName);
 
                     foreach (var kvp in reader.Cols)
                     {
